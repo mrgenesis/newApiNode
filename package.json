@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev": "nodemon index --ignore __tests__",
     "test": "jest --watchAll"
   },
   "keywords": [],
