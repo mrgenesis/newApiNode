@@ -8,7 +8,11 @@ const path = require('path')
     method: 'GET'
   };
 
-module.exports = async ({ localhostFolderPath, fileName = '.env', optionsGetRemoteFile = options }) => {
+module.exports = async ({
+  localhostFolderPath = path.join(__dirname, '..', '..', '..', 'localhost'),
+  optionsGetRemoteFile = options,
+  fileName = '.env'
+}) => {
   const variablesFile = localhostFolderPath + path.sep + fileName;
   if (!fs.existsSync(localhostFolderPath)) {
     fs.mkdirSync(localhostFolderPath);
@@ -20,4 +24,4 @@ module.exports = async ({ localhostFolderPath, fileName = '.env', optionsGetRemo
     fs.writeFileSync(variablesFile, data);
   }
   require('dotenv').config({ path: variablesFile });
-}
+};
