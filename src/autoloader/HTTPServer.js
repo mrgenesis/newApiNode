@@ -7,18 +7,18 @@
  */
 const
 
-  app = require('express')()
+  express = require('express')
 
-  // A tratativa de dados, por padrão é um tanto complicada. body-parser adicioná mais recursos facilitando o trabalho
-  // https://www.npmjs.com/package/body-parser
-  , bodyParser = require('body-parser');
+  , app = express()
+  , router = express.Router();
 
 
 // permitirá que a aplicação entenda requisições em JSON
-app.use(bodyParser.json());
-
-// permitirá que a aplicação entenda parâmetros via URL
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(express.json());
 
 
-module.exports = app;
+// Define um objeto para ficar disponível em toda a aplicação
+// http://expressjs.com/pt-br/4x/api.html#app.set
+app.set('resources', {});
+
+module.exports = { app, router };
