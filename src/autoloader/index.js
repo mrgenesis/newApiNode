@@ -1,3 +1,5 @@
+const { systemRouteFoldersPath } = require('../constant');
+
 /**
  * O objetivo deste arquivo é iniciar os recursos na sequencia correta. O
  * resultado será a exposição do app configurado com todos os recursos 
@@ -7,6 +9,10 @@
 const
   { join } = require('path')
   , variablesEnvironment = require(join(__dirname, 'variablesEnvironment'))
+  , StartAppError = require(join(__dirname, 'StartAppError'))
+  , loadRoute = require(join(__dirname, 'loadRoute'))
+  , systemRouteFolder = join(__dirname, '..', 'route')
+  , { externalRouteFolder } = require(join(__dirname, '..', 'config'));
 
 module.exports = async () => {
 
@@ -22,9 +28,13 @@ module.exports = async () => {
   const { app, router } = require(join(__dirname, 'HTTPServer'));
 
 
-  // Carrega os arquivos de configuração das rotas
-  require(join(__dirname, '..', 'route'))(router);
+  // Carrega as rotas do sistema
+  loadRoute({ router, StartAppError, routeFolder: systemRouteFolder });
 
+  // Carrega as rotas customizadas
+  (externalRouteFolder)
+    ? loadRoute({ router, StartAppError, routeFolder: externalRouteFolder })
+    : '';
 
   // Adiciona as rotas ao aplicativo
   app.use(router);
