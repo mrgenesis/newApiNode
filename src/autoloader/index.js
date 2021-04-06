@@ -1,5 +1,3 @@
-const { systemRouteFoldersPath } = require('../constant');
-
 /**
  * O objetivo deste arquivo é iniciar os recursos na sequencia correta. O
  * resultado será a exposição do app configurado com todos os recursos 
