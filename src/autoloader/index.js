@@ -8,9 +8,7 @@ const
   { join } = require('path')
   , variablesEnvironment = require(join(__dirname, 'variablesEnvironment'))
   , StartAppError = require(join(__dirname, 'StartAppError'))
-  , loadRoute = require(join(__dirname, 'loadRoute'))
-  , systemRouteFolder = join(__dirname, '..', 'route')
-  , { externalRouteFolder } = require(join(__dirname, '..', 'config'));
+  , loadRoute = require(join(__dirname, 'loadRoute'));
 
 module.exports = async () => {
 
@@ -22,20 +20,12 @@ module.exports = async () => {
   await variablesEnvironment(process.env.NODE_ENV);
 
 
-  // Configura e obtem a biblioteca que lida com as requisições http.
-  const { app, router } = require(join(__dirname, 'HTTPServer'));
+  // Configura e obtem a biblioteca que cria o app
+  const app = require(join(__dirname, 'HTTPServer'));
 
 
   // Carrega as rotas do sistema
-  loadRoute({ router, StartAppError, routeFolder: systemRouteFolder });
-
-  // Carrega as rotas customizadas
-  (externalRouteFolder)
-    ? loadRoute({ router, StartAppError, routeFolder: externalRouteFolder })
-    : '';
-
-  // Adiciona as rotas ao aplicativo
-  app.use(router);
+  loadRoute({ app, Err: StartAppError });
 
   return { app, port: process.env.PORT || 3000 };
 };

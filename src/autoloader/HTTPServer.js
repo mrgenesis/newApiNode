@@ -9,8 +9,7 @@ const
 
   express = require('express')
 
-  , app = express()
-  , router = express.Router();
+  , app = express();
 
 
 // permitirá que a aplicação entenda requisições em JSON
@@ -21,4 +20,4 @@ app.use(express.json());
 // http://expressjs.com/pt-br/4x/api.html#app.set
 app.set('resources', {});
 
-module.exports = { app, router };
+module.exports = app;
