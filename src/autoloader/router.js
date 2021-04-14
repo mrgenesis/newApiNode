@@ -13,7 +13,7 @@ foldersRoutesList.push(defaultRoutesSystem);
   ? foldersRoutesList.push(externalRouteFolder) : 'do nothing';
 
 function routeLoader(app, routeFolder, Err = Error) {
-  let foldersList = [], getRoute;
+  let foldersList = [], route;
   try {
     if (!existsSync(routeFolder)) {
       throw new Err(`O diretório "${routeFolder}" não existe.`);
@@ -23,11 +23,12 @@ function routeLoader(app, routeFolder, Err = Error) {
       if (!existsSync(path)) {
         throw new Err(`O diretório "${path}" não existe...`);
       }
-      getRoute = require(path);
-      if (typeof getRoute !== 'function') {
+      route = require(path);
+      if (typeof route !== 'function') {
         throw new Err(`O diretório "${path}" não existe.`);
       }
-      getRoute(app, router);
+      // Esta é a função exportada das pastas src/route/*
+      route(app, router);
 
     })
   }
