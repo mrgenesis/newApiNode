@@ -1,25 +1,43 @@
 const
   { join } = require('path')
+  , router = require('express').Router()
   , { existsSync } = require('fs')
-  , getFoldersNameList = require(
-    join(__dirname, '..', 'utils', 'getFoldersNameList'));
+  , getFoldersList = require(
+    join(__dirname, '..', 'utils', 'getFoldersList'))
+  , { externalRouteFolder } = require(join(__dirname, '..', 'config'))
+  , defaultRoutesSystem = join(__dirname, '..', 'route')
+  , foldersRoutesList = [];
 
-function loadRoute({ router, routeFolder, StartAppError = Error }) {
+foldersRoutesList.push(defaultRoutesSystem);
+(externalRouteFolder)
+  ? foldersRoutesList.push(externalRouteFolder) : 'do nothing';
+
+function routeLoader(app, routeFolder, Err = Error) {
+  let foldersList = [], getRoute;
   try {
     if (!existsSync(routeFolder)) {
-      throw new StartAppError(`O diretório "${routeFolder}" não existe.`);
+      throw new Err(`O diretório "${routeFolder}" não existe.`);
     }
-    getFoldersNameList(routeFolder)
-      .map(folder =>
-        require(join(routeFolder, folder))(router));
+    foldersList = getFoldersList(routeFolder);
+    foldersList.paths.forEach(path => {
+      if (!existsSync(path)) {
+        throw new Err(`O diretório "${path}" não existe...`);
+      }
+      getRoute = require(path);
+      if (typeof getRoute !== 'function') {
+        throw new Err(`O diretório "${path}" não existe.`);
+      }
+      getRoute(app, router);
 
-    return router;
-
-  } catch (err) {
-
+    })
+  }
+  catch (err) {
+    console.error(err);
     typeof err.starting === 'function' ? console.error(err.starting()) : '';
     console.error('As rotas não foram adicionadas. Diretório: ' + routeFolder);
-
   }
 }
-module.exports = loadRoute;
+
+module.exports = function router({ app, Err = Error }) {
+  foldersRoutesList.forEach(folder => routeLoader(app, folder, Err));
+};
