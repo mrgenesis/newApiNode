@@ -8,7 +8,7 @@ const
   { join } = require('path')
   , variablesEnvironment = require(join(__dirname, 'variablesEnvironment'))
   , StartAppError = require(join(__dirname, 'StartAppError'))
-  , routesLoader = require(join(__dirname, 'router'));
+  , router = require(join(__dirname, 'router'));
 
 module.exports = async () => {
 
@@ -24,8 +24,8 @@ module.exports = async () => {
   const app = require(join(__dirname, 'HTTPServer'));
 
 
-  // Carrega as rotas do sistema
-  routesLoader({ app, Err: StartAppError });
+  // Carrega as rotas para dentro do app
+  router({ app, Err: StartAppError });
 
   return { app, port: process.env.PORT || 3000 };
 };
